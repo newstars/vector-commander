@@ -2,120 +2,79 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as maplibregl from "maplibre-gl";
-import type { GeoJSONSource, Map, MapLayerMouseEvent } from "maplibre-gl";
+import type { GeoJSONSource, Map } from "maplibre-gl";
 import type {
   DistrictState,
-  MovementFlow,
-  PopulationMovementFlow,
-  SeoulFeatureCollection
+  SeoulFeatureCollection,
+  StationEdge,
+  StationMosquitoFlow,
+  StationMovementFlow,
+  StationState
 } from "../lib/types";
 
 type Props = {
   geojson: SeoulFeatureCollection | null;
   districts: DistrictState[];
+  stations: StationState[];
+  edges: StationEdge[];
+  passengerFlows: StationMovementFlow[];
+  mosquitoFlows: StationMosquitoFlow[];
   focusedCode: string;
   selectedCodes: string[];
-  movements: MovementFlow[];
-  populationMovements: PopulationMovementFlow[];
   onSelect: (code: string) => void;
 };
 
 export function SeoulMap({
   geojson,
   districts,
+  stations,
+  edges,
+  passengerFlows,
+  mosquitoFlows,
   focusedCode,
   selectedCodes,
-  movements,
-  populationMovements,
   onSelect
 }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<Map | null>(null);
-  const [showMosquitoRoutes, setShowMosquitoRoutes] = useState(true);
-  const [showPopulationRoutes, setShowPopulationRoutes] = useState(true);
+  const [showPassengers, setShowPassengers] = useState(true);
+  const [showMosquitoes, setShowMosquitoes] = useState(true);
   const districtRisk = useMemo(
     () => Object.fromEntries(districts.map((district) => [district.code, district.infection_risk])),
     [districts]
   );
-  const districtRiskRef = useRef(districtRisk);
-  const focusedCodeRef = useRef(focusedCode);
-  const selectedCodesRef = useRef(selectedCodes);
-
-  useEffect(() => {
-    districtRiskRef.current = districtRisk;
-    focusedCodeRef.current = focusedCode;
-    selectedCodesRef.current = selectedCodes;
-  }, [districtRisk, focusedCode, selectedCodes]);
+  const initialRiskRef = useRef(districtRisk);
 
   useEffect(() => {
     if (!containerRef.current || !geojson || mapRef.current) return;
-
     const currentGeojson = geojson;
-    const initialData = enrichGeojson(
-      currentGeojson,
-      districtRiskRef.current,
-      focusedCodeRef.current,
-      selectedCodesRef.current
-    );
     const map = new maplibregl.Map({
       container: containerRef.current,
       style: {
         version: 8,
         sources: {
-          seoul: {
-            type: "geojson",
-            data: initialData
-          }
+          seoul: { type: "geojson", data: enrichGeojson(currentGeojson, initialRiskRef.current) }
         },
         layers: [
           {
             id: "background",
             type: "background",
-            paint: { "background-color": "#111a18" }
+            paint: { "background-color": "#0b1412" }
           },
           {
             id: "district-fill",
             type: "fill",
             source: "seoul",
             paint: {
-              "fill-color": [
-                "interpolate",
-                ["linear"],
-                ["get", "risk"],
-                0,
-                "#d7f0d1",
-                35,
-                "#f4d35e",
-                70,
-                "#ee6c4d",
-                100,
-                "#9b2226"
-              ],
-              "fill-opacity": 0.9
+              "fill-color": "#20302b",
+              "fill-opacity": 0.72
             }
           },
           {
             id: "district-line",
             type: "line",
             source: "seoul",
-            paint: {
-              "line-color": [
-                "case",
-                ["get", "focused"],
-                "#ffffff",
-                ["get", "selected"],
-                "#f4d35e",
-                "#28423b"
-              ],
-              "line-width": [
-                "case",
-                ["get", "focused"],
-                4,
-                ["get", "selected"],
-                3,
-                1.5
-              ]
-            }
+            paint: { "line-color": "#355048", "line-width": 1.2 }
           }
         ]
       },
@@ -125,100 +84,84 @@ export function SeoulMap({
     });
     mapRef.current = map;
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-left");
-
     const bounds = geojsonBounds(currentGeojson);
-    if (!bounds.isEmpty()) {
-      map.fitBounds(bounds, { padding: 52, animate: false });
-    }
-    map.on("click", "district-fill", (event: MapLayerMouseEvent) => {
-      const code = event.features?.[0]?.properties?.code;
-      if (typeof code === "string") onSelect(code);
-    });
-    map.on("mouseenter", "district-fill", () => {
-      map.getCanvas().style.cursor = "pointer";
-    });
-    map.on("mouseleave", "district-fill", () => {
-      map.getCanvas().style.cursor = "";
-    });
-
+    if (!bounds.isEmpty()) map.fitBounds(bounds, { padding: 52, animate: false });
     return () => {
       map.remove();
       mapRef.current = null;
     };
-  }, [geojson, onSelect]);
+  }, [geojson]);
 
   useEffect(() => {
     if (!geojson) return;
     const source = mapRef.current?.getSource("seoul") as GeoJSONSource | undefined;
-    source?.setData(enrichGeojson(geojson, districtRisk, focusedCode, selectedCodes));
-  }, [districtRisk, focusedCode, geojson, selectedCodes]);
+    source?.setData(enrichGeojson(geojson, districtRisk));
+  }, [districtRisk, geojson]);
 
   return (
-    <div className="map-wrap">
+    <div className="map-wrap station-map-wrap">
       <div ref={containerRef} className="map" />
       {geojson ? (
-        <DistrictOverlay
+        <StationOverlay
           geojson={geojson}
           districts={districts}
+          stations={stations}
+          edges={edges}
+          passengerFlows={passengerFlows}
+          mosquitoFlows={mosquitoFlows}
           focusedCode={focusedCode}
           selectedCodes={selectedCodes}
-          movements={movements}
-          populationMovements={populationMovements}
-          showMosquitoRoutes={showMosquitoRoutes}
-          showPopulationRoutes={showPopulationRoutes}
+          showPassengers={showPassengers}
+          showMosquitoes={showMosquitoes}
           onSelect={onSelect}
         />
       ) : null}
-      {!geojson ? <div className="map-loading">서울 작전 지도를 불러오는 중</div> : null}
+      {!geojson ? <div className="map-loading">서울 지하철 전술망을 불러오는 중</div> : null}
       <div className="layer-controls" aria-label="지도 이동 경로 레이어">
         <button
           type="button"
-          className={showMosquitoRoutes ? "layer-toggle mosquito active" : "layer-toggle mosquito"}
-          aria-pressed={showMosquitoRoutes}
-          onClick={() => setShowMosquitoRoutes((visible) => !visible)}
+          className={showPassengers ? "layer-toggle population active" : "layer-toggle population"}
+          aria-pressed={showPassengers}
+          onClick={() => setShowPassengers((visible) => !visible)}
         >
-          모기 이동
+          승객 흐름
         </button>
         <button
           type="button"
-          className={showPopulationRoutes ? "layer-toggle population active" : "layer-toggle population"}
-          aria-pressed={showPopulationRoutes}
-          onClick={() => setShowPopulationRoutes((visible) => !visible)}
+          className={showMosquitoes ? "layer-toggle mosquito active" : "layer-toggle mosquito"}
+          aria-pressed={showMosquitoes}
+          onClick={() => setShowMosquitoes((visible) => !visible)}
         >
-          생활인구 이동
+          모기 확산
         </button>
       </div>
-      <div className="legend">
-        <span>낮음</span>
+      <div className="legend station-legend">
+        <span>역세권 위험</span>
         <div className="legend-bar" />
         <span>높음</span>
-        {showMosquitoRoutes && movements.length ? <span className="movement-key">→ 모기</span> : null}
-        {showPopulationRoutes && populationMovements.length ? <span className="population-key">→ 생활인구</span> : null}
+        {showPassengers ? <span className="population-key">→ 승객</span> : null}
+        {showMosquitoes ? <span className="movement-key">→ 모기</span> : null}
       </div>
     </div>
   );
 }
 
-function DistrictOverlay({
+function StationOverlay({
   geojson,
   districts,
+  stations,
+  edges,
+  passengerFlows,
+  mosquitoFlows,
   focusedCode,
   selectedCodes,
-  movements,
-  populationMovements,
-  showMosquitoRoutes,
-  showPopulationRoutes,
+  showPassengers,
+  showMosquitoes,
   onSelect
-}: {
+}: Props & {
   geojson: SeoulFeatureCollection;
-  districts: DistrictState[];
-  focusedCode: string;
-  selectedCodes: string[];
-  movements: MovementFlow[];
-  populationMovements: PopulationMovementFlow[];
-  showMosquitoRoutes: boolean;
-  showPopulationRoutes: boolean;
-  onSelect: (code: string) => void;
+  showPassengers: boolean;
+  showMosquitoes: boolean;
 }) {
   const width = 1000;
   const height = 760;
@@ -241,7 +184,7 @@ function DistrictOverlay({
   const maxLng = Math.max(...lngs);
   const minLat = Math.min(...lats);
   const maxLat = Math.max(...lats);
-  const districtByCode = Object.fromEntries(districts.map((district) => [district.code, district]));
+  const stationByCode = Object.fromEntries(stations.map((station) => [station.code, station]));
 
   function project([lng, lat]: [number, number]): [number, number] {
     const x = padding + ((lng - minLng) / (maxLng - minLng)) * (width - padding * 2);
@@ -266,111 +209,162 @@ function DistrictOverlay({
   }
 
   return (
-    <svg className="district-overlay" viewBox={`0 0 ${width} ${height}`} aria-label="서울 자치구 위험 지도">
+    <svg className="district-overlay station-overlay" viewBox={`0 0 ${width} ${height}`} aria-label="서울 지하철 역세권 위험 지도">
       <defs>
-        <marker id="movement-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-          <path d="M0,0 L8,4 L0,8 Z" fill="#57d3ff" />
+        <marker id="passenger-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+          <path d="M0,0 L7,3.5 L0,7 Z" fill="#6df2a2" />
         </marker>
-        <marker id="population-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-          <path d="M0,0 L8,4 L0,8 Z" fill="#6df2a2" />
+        <marker id="station-mosquito-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+          <path d="M0,0 L7,3.5 L0,7 Z" fill="#57d3ff" />
         </marker>
       </defs>
-      {geojson.features.map((feature) => {
-        const district = districtByCode[feature.properties.code];
-        const risk = district?.infection_risk ?? 0;
-        return (
+
+      <g className="district-base">
+        {geojson.features.map((feature) => (
           <path
             key={feature.properties.code}
             d={geometryPath(feature)}
-            fill={riskColor(risk)}
-            className={[
-              "district-shape",
-              selectedCodes.includes(feature.properties.code) ? "selected" : "",
-              feature.properties.code === focusedCode ? "focused" : ""
-            ].filter(Boolean).join(" ")}
+            className="district-shape station-district"
+            fill="#1b2b27"
             fillRule="evenodd"
-            onClick={() => onSelect(feature.properties.code)}
-          >
-            <title>{feature.properties.name} · 위험도 {risk.toFixed(1)}</title>
-          </path>
-        );
-      })}
-      {showPopulationRoutes ? (
-        <g className="population-routes" aria-label="자치구 간 생활인구 이동 경로">
-          {populationMovements.map((movement) => {
-            const source = districtByCode[movement.from_code];
-            const target = districtByCode[movement.to_code];
+          />
+        ))}
+        {districts.map((district) => {
+          const [x, y] = project(district.centroid);
+          return <text key={district.code} x={x} y={y} className="district-name station-district-name">{district.name}</text>;
+        })}
+      </g>
+
+      <g className="transit-network" aria-label="주요 지하철 연결망">
+        {edges.map((edge, index) => {
+          const source = stationByCode[edge.from_code];
+          const target = stationByCode[edge.to_code];
+          if (!source || !target) return null;
+          const [x1, y1] = project(source.location);
+          const [x2, y2] = project(target.location);
+          return (
+            <line
+              key={`${edge.line}-${edge.from_code}-${edge.to_code}-${index}`}
+              x1={x1}
+              y1={y1}
+              x2={x2}
+              y2={y2}
+              className="transit-line"
+              stroke={lineColor(edge.line)}
+            />
+          );
+        })}
+      </g>
+
+      {showPassengers ? (
+        <g aria-label="역간 승객 이동">
+          {passengerFlows.map((flow, index) => {
+            const source = stationByCode[flow.from_code];
+            const target = stationByCode[flow.to_code];
             if (!source || !target) return null;
-            const [x1, y1] = project(source.centroid);
-            const [x2, y2] = project(target.centroid);
+            const [x1, y1] = project(source.location);
+            const [x2, y2] = project(target.location);
             return (
               <line
-                key={`${movement.from_code}-${movement.to_code}`}
+                key={`passenger-${flow.from_code}-${flow.to_code}-${index}`}
                 x1={x1}
                 y1={y1}
                 x2={x2}
                 y2={y2}
-                className="population-route"
-                strokeWidth={Math.min(9, 2 + movement.estimated_people / 900)}
-                markerEnd="url(#population-arrow)"
+                className="station-passenger-flow"
+                strokeWidth={Math.min(7, 1.3 + flow.estimated_people / 7000)}
+                markerEnd="url(#passenger-arrow)"
               >
-                <title>{source.name} → {target.name} · 약 {movement.estimated_people.toLocaleString()}명</title>
+                <title>{source.name} → {target.name} · 추정 {flow.estimated_people.toLocaleString()}명</title>
               </line>
             );
           })}
         </g>
       ) : null}
-      {showMosquitoRoutes ? (
-        <g className="movement-routes" aria-label="자치구 간 모기 이동 경로">
-          {movements.map((movement) => {
-          const source = districtByCode[movement.from_code];
-          const target = districtByCode[movement.to_code];
-          if (!source || !target) return null;
-          const [x1, y1] = project(source.centroid);
-          const [x2, y2] = project(target.centroid);
-          return (
-            <line
-              key={`${movement.from_code}-${movement.to_code}`}
-              x1={x1}
-              y1={y1}
-              x2={x2}
-              y2={y2}
-              className="movement-route"
-              strokeWidth={Math.min(8, 2 + movement.estimated_adults * 1.4)}
-              markerEnd="url(#movement-arrow)"
-            >
-              <title>
-                {source.name} → {target.name} · 약 {movement.estimated_adults.toFixed(1)}마리
-              </title>
-            </line>
-          );
+
+      {showMosquitoes ? (
+        <g aria-label="역세권 간 모기 확산">
+          {mosquitoFlows.map((flow, index) => {
+            const source = stationByCode[flow.from_code];
+            const target = stationByCode[flow.to_code];
+            if (!source || !target) return null;
+            const [x1, y1] = project(source.location);
+            const [x2, y2] = project(target.location);
+            return (
+              <line
+                key={`mosquito-${flow.from_code}-${flow.to_code}-${index}`}
+                x1={x1}
+                y1={y1}
+                x2={x2}
+                y2={y2}
+                className="station-mosquito-flow"
+                strokeWidth={Math.min(5, 1.2 + flow.estimated_adults)}
+                markerEnd="url(#station-mosquito-arrow)"
+              >
+                <title>{source.name} → {target.name} · 추정 {flow.estimated_adults.toFixed(1)}마리</title>
+              </line>
+            );
           })}
         </g>
       ) : null}
-      {districts.map((district) => {
-        const [x, y] = project(district.centroid);
-        return (
-          <text key={district.code} x={x} y={y} className="district-name">
-            {district.name}
-          </text>
-        );
-      })}
+
+      <g className="station-nodes">
+        {stations.map((station) => {
+          const [x, y] = project(station.location);
+          const selected = selectedCodes.includes(station.code);
+          const focused = focusedCode === station.code;
+          const radius = Math.min(15, 6 + station.daily_ridership / 26000);
+          const showLabel = focused || selected || station.daily_ridership >= 95000;
+          return (
+            <g
+              key={station.code}
+              className={focused ? "station-node focused" : selected ? "station-node selected" : "station-node"}
+              onClick={() => onSelect(station.code)}
+            >
+              <circle
+                cx={x}
+                cy={y}
+                r={radius}
+                fill={stationRiskColor(station.exposure_risk)}
+              >
+                <title>
+                  {station.name}역 · 위험 {station.exposure_risk.toFixed(1)} · 일평균 {station.daily_ridership.toLocaleString()}명
+                </title>
+              </circle>
+              {showLabel ? <text x={x} y={y - radius - 5} className="station-label">{station.name}</text> : null}
+            </g>
+          );
+        })}
+      </g>
     </svg>
   );
 }
 
-function riskColor(risk: number): string {
-  if (risk >= 70) return "#9b2226";
-  if (risk >= 45) return "#ee6c4d";
-  if (risk >= 25) return "#f4d35e";
-  return "#d7f0d1";
+function stationRiskColor(risk: number): string {
+  if (risk >= 78) return "#e63946";
+  if (risk >= 62) return "#f77f00";
+  if (risk >= 46) return "#f4d35e";
+  return "#84d18f";
+}
+
+function lineColor(line: string): string {
+  const colors: Record<string, string> = {
+    "1호선": "#4f82c0",
+    "2호선": "#4aa564",
+    "3호선": "#d78745",
+    "4호선": "#5aa6c8",
+    "5호선": "#8d67b8",
+    "6호선": "#a57b52",
+    "7호선": "#788b3b",
+    "8호선": "#d05d84",
+    "9호선": "#b59b52"
+  };
+  return colors[line] ?? "#78948b";
 }
 
 function enrichGeojson(
   geojson: SeoulFeatureCollection,
-  districtRisk: Record<string, number>,
-  focusedCode: string,
-  selectedCodes: string[]
+  districtRisk: Record<string, number>
 ): SeoulFeatureCollection {
   return {
     ...geojson,
@@ -378,9 +372,7 @@ function enrichGeojson(
       ...feature,
       properties: {
         ...feature.properties,
-        risk: districtRisk[feature.properties.code] ?? 0,
-        selected: selectedCodes.includes(feature.properties.code),
-        focused: feature.properties.code === focusedCode
+        risk: districtRisk[feature.properties.code] ?? 0
       }
     }))
   };
@@ -388,7 +380,6 @@ function enrichGeojson(
 
 function geojsonBounds(geojson: SeoulFeatureCollection): maplibregl.LngLatBounds {
   const bounds = new maplibregl.LngLatBounds();
-
   function visit(value: unknown): void {
     if (!Array.isArray(value)) return;
     if (value.length >= 2 && typeof value[0] === "number" && typeof value[1] === "number") {
@@ -397,7 +388,6 @@ function geojsonBounds(geojson: SeoulFeatureCollection): maplibregl.LngLatBounds
     }
     value.forEach(visit);
   }
-
   geojson.features.forEach((feature) => visit(feature.geometry.coordinates));
   return bounds;
 }

@@ -5,9 +5,15 @@ import math
 import uuid
 from pathlib import Path
 
-from app.simulation.adapters import SampleMosquitoAdapter, SimulationAdapter, SimulationContext
+from app.simulation.adapters import (
+    SampleMosquitoAdapter,
+    SampleStationAdapter,
+    SimulationAdapter,
+    SimulationContext,
+    StationSimulationAdapter,
+    StationSimulationContext,
+)
 from app.simulation.schemas import (
-    DistrictCommand,
     DistrictState,
     GameResources,
     GameRules,
@@ -18,6 +24,10 @@ from app.simulation.schemas import (
     PopulationMovementFlow,
     PolicyCost,
     PolicyType,
+    StationCommand,
+    StationEdge,
+    StationMosquitoFlow,
+    StationState,
     TurnRequest,
     TurnResponse,
 )
@@ -29,22 +39,42 @@ class GameEngine:
         geojson_path: Path,
         config_path: Path,
         adapter: SimulationAdapter | None = None,
+        station_path: Path | None = None,
+        station_adapter: StationSimulationAdapter | None = None,
     ) -> None:
         self.geojson_path = geojson_path
         self.config_path = config_path
         self.map_geojson = json.loads(geojson_path.read_text(encoding="utf-8"))
         self.config = json.loads(config_path.read_text(encoding="utf-8"))
+        station_path = station_path or geojson_path.with_name("subway_stations.json")
+        self.station_data = json.loads(station_path.read_text(encoding="utf-8"))
         self.policy_costs = {
             PolicyType(name): PolicyCost(**cost)
             for name, cost in self.config["policy_costs"].items()
         }
         self.adapter = adapter or SampleMosquitoAdapter()
+        self.station_adapter = station_adapter or SampleStationAdapter()
         self.neighbor_map = self._build_neighbor_map()
+        self.station_edges = [
+            StationEdge(**edge) for edge in self.station_data["edges"]
+        ]
         self.games: dict[str, GameState] = {}
 
     def new_game(self) -> NewGameResponse:
         game_id = str(uuid.uuid4())
         districts = self._initial_districts()
+        initial_stations = self._initial_stations(districts)
+        stations, _, station_movements = self.station_adapter.step(
+            initial_stations,
+            self.station_edges,
+            {},
+            StationSimulationContext(
+                turn=0,
+                week=int(self.config["week"]),
+                temperature_c=float(self.config["temperature_c"]),
+                precipitation_mm=float(self.config["precipitation_mm"]),
+            ),
+        )
         state = GameState(
             game_id=game_id,
             turn=0,
@@ -64,8 +94,12 @@ class GameEngine:
             ),
             districts=districts,
             population_movements=self._population_movement_flows(districts),
+            stations=stations,
+            station_edges=self.station_edges,
+            station_movements=station_movements,
+            station_mosquito_movements=self._station_mosquito_flows(stations),
             event_log=[
-                "서울 전역 감시망 가동. 기본 파라미터는 검증용 샘플입니다.",
+                "서울 주요 53개 역세권 감시망 가동. 승하차량 외 파라미터는 검증용 추정치입니다.",
             ],
         )
         self.games[game_id] = state
@@ -116,18 +150,29 @@ class GameEngine:
             precipitation_mm=precipitation,
             neighbor_map=self.neighbor_map,
         )
-        next_districts, deltas = self.adapter.step(state.districts, interventions, context)
+        next_districts, deltas = self.adapter.step(state.districts, {}, context)
         next_districts = self._update_floating_population(
             next_districts,
             turn=state.turn + 1,
             week=next_week,
         )
         movements = self._movement_flows(state.districts)
+        next_stations, station_deltas, station_movements = self.station_adapter.step(
+            state.stations,
+            state.station_edges,
+            interventions,
+            StationSimulationContext(
+                turn=state.turn + 1,
+                week=next_week,
+                temperature_c=temperature,
+                precipitation_mm=precipitation,
+            ),
+        )
 
         budget_spent, teams_spent = self._command_costs(request.commands)
         if request.commands:
             turn_summary = (
-                f"{state.turn + 1}턴: {len(request.commands)}개 지역에 정책 실행, "
+                f"{state.turn + 1}턴: {len(request.commands)}개 역세권에 정책 실행, "
                 f"예산 {budget_spent:,} 사용, 팀 {teams_spent}개 투입, "
                 f"주간 예산 {state.rules.weekly_budget_income:,} 배정."
             )
@@ -155,6 +200,9 @@ class GameEngine:
                 ),
                 "districts": next_districts,
                 "population_movements": self._population_movement_flows(next_districts),
+                "stations": next_stations,
+                "station_movements": station_movements,
+                "station_mosquito_movements": self._station_mosquito_flows(next_stations),
                 "event_log": event_log,
             }
         )
@@ -164,7 +212,35 @@ class GameEngine:
             state=next_state,
             deltas=deltas,
             movements=movements,
+            station_deltas=station_deltas,
         )
+
+    def _station_mosquito_flows(
+        self,
+        stations: list[StationState],
+    ) -> list[StationMosquitoFlow]:
+        by_code = {station.code: station for station in stations}
+        flows: list[StationMosquitoFlow] = []
+        seen: set[tuple[str, str]] = set()
+        for edge in self.station_edges:
+            pair = tuple(sorted((edge.from_code, edge.to_code)))
+            if pair in seen:
+                continue
+            seen.add(pair)
+            first = by_code[edge.from_code]
+            second = by_code[edge.to_code]
+            difference = first.mosquito_adults - second.mosquito_adults
+            if abs(difference) < 14:
+                continue
+            source, target = (first, second) if difference > 0 else (second, first)
+            flows.append(
+                StationMosquitoFlow(
+                    from_code=source.code,
+                    to_code=target.code,
+                    estimated_adults=round(abs(difference) * 0.018, 2),
+                )
+            )
+        return sorted(flows, key=lambda flow: flow.estimated_adults, reverse=True)[:24]
 
     def _movement_flows(self, districts: list[DistrictState]) -> list[MovementFlow]:
         by_code = {district.code: district for district in districts}
@@ -235,25 +311,25 @@ class GameEngine:
     def _validate_and_price_commands(
         self,
         state: GameState,
-        commands: list[DistrictCommand],
+        commands: list[StationCommand],
     ) -> dict[str, list[PolicyType]]:
-        known_codes = {district.code for district in state.districts}
+        known_codes = {station.code for station in state.stations}
         seen: set[str] = set()
         for command in commands:
-            if command.district_code not in known_codes:
-                raise ValueError(f"Unknown district code: {command.district_code}")
-            if command.district_code in seen:
-                raise ValueError(f"Duplicate command for district: {command.district_code}")
-            seen.add(command.district_code)
+            if command.station_code not in known_codes:
+                raise ValueError(f"Unknown station code: {command.station_code}")
+            if command.station_code in seen:
+                raise ValueError(f"Duplicate command for station: {command.station_code}")
+            seen.add(command.station_code)
 
         budget, teams = self._command_costs(commands)
         if budget > state.resources.budget:
             raise ValueError("Insufficient budget")
         if teams > state.resources.teams:
             raise ValueError("Insufficient response teams")
-        return {command.district_code: command.policies for command in commands}
+        return {command.station_code: command.policies for command in commands}
 
-    def _command_costs(self, commands: list[DistrictCommand]) -> tuple[int, int]:
+    def _command_costs(self, commands: list[StationCommand]) -> tuple[int, int]:
         budget = 0
         teams = 0
         for command in commands:
@@ -261,6 +337,44 @@ class GameEngine:
             budget += sum(self.policy_costs[policy].budget for policy in unique_policies)
             teams += sum(self.policy_costs[policy].teams for policy in unique_policies)
         return budget, teams
+
+    def _initial_stations(
+        self,
+        districts: list[DistrictState],
+    ) -> list[StationState]:
+        districts_by_code = {district.code: district for district in districts}
+        stations: list[StationState] = []
+        for item in self.station_data["stations"]:
+            district = districts_by_code[item["district_code"]]
+            ridership = int(item["daily_ridership"])
+            habitat = float(item["habitat_index"])
+            breeding = 24 + habitat * 48
+            adults = (
+                160
+                + habitat * 250
+                + min(ridership / 1000, 190) * 0.72
+                + district.water_index * 32
+            )
+            stations.append(
+                StationState(
+                    code=item["code"],
+                    name=item["name"],
+                    lines=item["lines"],
+                    location=(float(item["lng"]), float(item["lat"])),
+                    district_code=item["district_code"],
+                    district_name=item["district_name"],
+                    daily_ridership=ridership,
+                    living_population=round(ridership * 1.05 + 6800),
+                    activity_type=item["activity_type"],
+                    habitat_index=habitat,
+                    mosquito_adults=round(adults, 2),
+                    larvae=round(breeding * 4.8, 2),
+                    breeding_sites=round(breeding, 2),
+                    infected_arrivals=round(ridership * 0.0012, 2),
+                    exposure_risk=0,
+                )
+            )
+        return stations
 
     def _initial_districts(self) -> list[DistrictState]:
         districts: list[DistrictState] = []

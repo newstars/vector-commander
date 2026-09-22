@@ -1,4 +1,4 @@
-import type { DistrictCommand, GameState, SeoulFeatureCollection, TurnResponse } from "./types";
+import type { GameState, SeoulFeatureCollection, StationCommand, TurnResponse } from "./types";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "http://127.0.0.1:8000";
 
@@ -21,7 +21,7 @@ export async function createGame(): Promise<GameState> {
 
 export async function runTurn(
   gameId: string,
-  commands: DistrictCommand[]
+  commands: StationCommand[]
 ): Promise<TurnResponse> {
   const response = await fetch(`${API_BASE}/game/${gameId}/turn`, {
     method: "POST",

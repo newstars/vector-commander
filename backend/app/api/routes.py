@@ -64,10 +64,14 @@ def research_notes() -> dict[str, Any]:
         "caveat": "The model is structured from Jeon-Young Kang's published spatial ABM research, but it is not a verified copy of the original code or parameters.",
         "model_features": [
             "spatially explicit district states",
+            "station catchments seeded with official station coordinates and observed 2025 ridership",
+            "modeled passenger movement along a curated major-station network",
             "temperature and precipitation driven breeding pressure",
             "weekly mosquito life-cycle updates",
             "localized intervention effects",
-            "neighbor diffusion between adjacent districts approximated from centroids",
+            "low-rate mosquito pressure between connected station catchments",
         ],
-        "adapter": "Replace SampleMosquitoAdapter with another SimulationAdapter implementation when validated code/data is available.",
+        "observed_data": ["station coordinates", "2025 daily average station ridership"],
+        "modeled_data": ["station living population", "passenger OD", "infected arrivals", "habitat pressure"],
+        "adapter": "Replace SampleMosquitoAdapter and SampleStationAdapter when validated code/data is available.",
     }

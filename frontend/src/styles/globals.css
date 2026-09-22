@@ -92,7 +92,7 @@ h2 {
 
 .war-room {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 390px;
+  grid-template-columns: minmax(0, 1fr) 410px;
   gap: 18px;
   min-height: calc(100vh - 116px);
 }
@@ -150,6 +150,98 @@ h2 {
   paint-order: stroke;
   stroke: rgba(255, 255, 255, 0.68);
   stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+.station-overlay {
+  z-index: 2;
+}
+
+.station-district {
+  cursor: default;
+  stroke: #355048;
+  stroke-width: 1;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.station-district:hover {
+  filter: none;
+}
+
+.station-district-name {
+  fill: #89a59a;
+  stroke: #0b1412;
+  stroke-width: 2px;
+  font-size: 11px;
+  opacity: 0.58;
+}
+
+.transit-line {
+  stroke-width: 4;
+  stroke-linecap: round;
+  opacity: 0.5;
+  pointer-events: none;
+  vector-effect: non-scaling-stroke;
+}
+
+.station-passenger-flow,
+.station-mosquito-flow {
+  stroke-linecap: round;
+  pointer-events: stroke;
+  vector-effect: non-scaling-stroke;
+}
+
+.station-passenger-flow {
+  stroke: #6df2a2;
+  stroke-dasharray: 8 8;
+  opacity: 0.83;
+  animation: population-flow 1.45s linear infinite;
+}
+
+.station-mosquito-flow {
+  stroke: #57d3ff;
+  stroke-dasharray: 3 7;
+  opacity: 0.82;
+  animation: route-flow 1.05s linear infinite;
+}
+
+.station-node {
+  cursor: pointer;
+}
+
+.station-node circle {
+  stroke: #10201b;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+  transition: filter 120ms ease, stroke-width 120ms ease;
+}
+
+.station-node:hover circle {
+  filter: brightness(1.18);
+  stroke: #ffffff;
+  stroke-width: 3;
+}
+
+.station-node.selected circle {
+  stroke: #f4d35e;
+  stroke-width: 4;
+}
+
+.station-node.focused circle {
+  stroke: #ffffff;
+  stroke-width: 5;
+}
+
+.station-label {
+  fill: #ffffff;
+  stroke: #0b1412;
+  stroke-width: 3px;
+  font-size: 12px;
+  font-weight: 800;
+  pointer-events: none;
+  text-anchor: middle;
+  paint-order: stroke;
   stroke-linejoin: round;
 }
 
@@ -255,6 +347,10 @@ h2 {
   background: linear-gradient(90deg, #d7f0d1, #f4d35e, #ee6c4d, #9b2226);
 }
 
+.station-legend .legend-bar {
+  width: 105px;
+}
+
 .command-panel {
   display: flex;
   flex-direction: column;
@@ -334,6 +430,27 @@ h2 {
   text-align: center;
 }
 
+.station-readout {
+  align-items: flex-start;
+}
+
+.line-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 8px;
+}
+
+.line-badges span {
+  border: 1px solid rgba(196, 229, 208, 0.24);
+  border-radius: 4px;
+  padding: 3px 6px;
+  background: #17231f;
+  color: #d7eadf;
+  font-size: 10px;
+  font-weight: 700;
+}
+
 .metrics {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -358,6 +475,16 @@ h2 {
   display: block;
   margin-top: 8px;
   font-size: 22px;
+}
+
+.station-metrics .metric {
+  min-height: 64px;
+  padding: 10px;
+}
+
+.station-metrics .metric strong {
+  margin-top: 6px;
+  font-size: 17px;
 }
 
 .population-note {
@@ -472,6 +599,78 @@ h2 {
   padding: 10px;
   background: rgba(155, 34, 38, 0.3);
   color: #ffd8d8;
+}
+
+.turn-result {
+  display: grid;
+  gap: 10px;
+  border-top: 1px solid rgba(244, 211, 94, 0.34);
+  border-bottom: 1px solid rgba(244, 211, 94, 0.24);
+  padding: 14px 0;
+}
+
+.result-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.result-heading .eyebrow {
+  margin: 0;
+}
+
+.delta-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.delta-grid > div {
+  min-width: 0;
+  border: 1px solid rgba(196, 229, 208, 0.13);
+  border-radius: 5px;
+  padding: 7px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.delta-grid span,
+.delta-grid strong {
+  display: block;
+}
+
+.delta-grid span {
+  color: #87aa9a;
+  font-size: 9px;
+}
+
+.delta-grid strong {
+  overflow: hidden;
+  margin-top: 4px;
+  font-size: 12px;
+  text-overflow: ellipsis;
+}
+
+.delta.down {
+  color: #6df2a2;
+}
+
+.delta.up {
+  color: #ff8c70;
+}
+
+.network-changes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px 10px;
+}
+
+.network-changes span {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  color: #c6d8cf;
+  font-size: 11px;
 }
 
 .log {

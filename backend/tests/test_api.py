@@ -13,7 +13,7 @@ def test_health() -> None:
 def test_game_turn_api() -> None:
     client = TestClient(app)
     new_game = client.post("/game/new").json()
-    district = new_game["state"]["districts"][0]
+    station = new_game["state"]["stations"][0]
     hire_response = client.post(
         f"/game/{new_game['game_id']}/teams",
         json={"count": 2},
@@ -26,7 +26,7 @@ def test_game_turn_api() -> None:
         json={
             "commands": [
                 {
-                    "district_code": district["code"],
+                    "station_code": station["code"],
                     "policies": ["fogging"],
                 }
             ]
@@ -38,3 +38,5 @@ def test_game_turn_api() -> None:
     assert payload["status"] == "advanced"
     assert payload["state"]["turn"] == 1
     assert payload["movements"]
+    assert payload["station_deltas"]
+    assert payload["state"]["station_movements"]

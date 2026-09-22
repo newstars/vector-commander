@@ -1,0 +1,1232 @@
+{
+  "metadata": {
+    "coordinate_source": "Seoul Metropolitan Government subway station master (station_GEOM)",
+    "ridership_source": "Seoul Open Data OA-12914, 2025 daily average derived from monthly files",
+    "license": "Korea Open Government License Type 1 (attribution)",
+    "living_population_note": "Station living population is modeled from ridership and district population, not copied from the 250m source file."
+  },
+  "stations": [
+    {
+      "code": "S001",
+      "name": "강남",
+      "lines": [
+        "2호선"
+      ],
+      "lng": 127.027912,
+      "lat": 37.49799,
+      "district_code": "11220",
+      "district_name": "서초구",
+      "daily_ridership": 157413,
+      "activity_type": "평일우위형",
+      "habitat_index": 0.38
+    },
+    {
+      "code": "S002",
+      "name": "잠실",
+      "lines": [
+        "2호선",
+        "8호선"
+      ],
+      "lng": 127.100159,
+      "lat": 37.513262,
+      "district_code": "11240",
+      "district_name": "송파구",
+      "daily_ridership": 200756,
+      "activity_type": "도심혼합형",
+      "habitat_index": 0.55
+    },
+    {
+      "code": "S003",
+      "name": "홍대입구",
+      "lines": [
+        "2호선",
+        "경의선",
+        "공항철도"
+      ],
+      "lng": 126.926683,
+      "lat": 37.557641,
+      "district_code": "11140",
+      "district_name": "마포구",
+      "daily_ridership": 189662,
+      "activity_type": "상권·여가형",
+      "habitat_index": 0.72
+    },
+    {
+      "code": "S004",
+      "name": "서울역",
+      "lines": [
+        "1호선",
+        "4호선",
+        "경부선",
+        "경의선",
+        "공항철도"
+      ],
+      "lng": 126.97103,
+      "lat": 37.557231,
+      "district_code": "11020",
+      "district_name": "중구",
+      "daily_ridership": 210945,
+      "activity_type": "평일우위형",
+      "habitat_index": 0.41
+    },
+    {
+      "code": "S005",
+      "name": "고속터미널",
+      "lines": [
+        "3호선",
+        "7호선",
+        "9호선"
+      ],
+      "lng": 127.004916,
+      "lat": 37.504891,
+      "district_code": "11220",
+      "district_name": "서초구",
+      "daily_ridership": 170123,
+      "activity_type": "상권·여가형",
+      "habitat_index": 0.58
+    },
+    {
+      "code": "S006",
+      "name": "사당",
+      "lines": [
+        "2호선",
+        "4호선"
+      ],
+      "lng": 126.981651,
+      "lat": 37.476955,
+      "district_code": "11200",
+      "district_name": "동작구",
+      "daily_ridership": 137792,
+      "activity_type": "도심혼합형",
+      "habitat_index": 0.75
+    },
+    {
+      "code": "S007",
+      "name": "신림",
+      "lines": [
+        "2호선",
+        "신림선"
+      ],
+      "lng": 126.929715,
+      "lat": 37.484201,
+      "district_code": "11210",
+      "district_name": "관악구",
+      "daily_ridership": 108557,
+      "activity_type": "평일우위형",
+      "habitat_index": 0.44
+    },
+    {
+      "code": "S008",
+      "name": "구로디지털단지",
+      "lines": [
+        "2호선"
+      ],
+      "lng": 126.901401,
+      "lat": 37.485266,
+      "district_code": "11190",
+      "district_name": "영등포구",
+      "daily_ridership": 110445,
+      "activity_type": "업무중심형",
+      "habitat_index": 0.61
+    },
+    {
+      "code": "S009",
+      "name": "신도림",
+      "lines": [
+        "2호선",
+        "경부선"
+      ],
+      "lng": 126.891084,
+      "lat": 37.508961,
+      "district_code": "11170",
+      "district_name": "구로구",
+      "daily_ridership": 106042,
+      "activity_type": "도심혼합형",
+      "habitat_index": 0.78
+    },
+    {
+      "code": "S010",
+      "name": "건대입구",
+      "lines": [
+        "2호선",
+        "7호선"
+      ],
+      "lng": 127.069191,
+      "lat": 37.540373,
+      "district_code": "11050",
+      "district_name": "광진구",
+      "daily_ridership": 104788,
+      "activity_type": "도심혼합형",
+      "habitat_index": 0.47
+    },
+    {
+      "code": "S011",
+      "name": "선릉",
+      "lines": [
+        "2호선",
+        "분당선"
+      ],
+      "lng": 127.048203,
+      "lat": 37.504286,
+      "district_code": "11230",
+      "district_name": "강남구",
+      "daily_ridership": 132625,
+      "activity_type": "업무중심형",
+      "habitat_index": 0.64
+    },
+    {
+      "code": "S012",
+      "name": "삼성",
+      "lines": [
+        "2호선"
+      ],
+      "lng": 127.06316,
+      "lat": 37.508844,
+      "district_code": "11230",
+      "district_name": "강남구",
+      "daily_ridership": 107386,
+      "activity_type": "업무중심형",
+      "habitat_index": 0.81
+    },
+    {
+      "code": "S013",
+      "name": "교대",
+      "lines": [
+        "2호선",
+        "3호선"
+      ],
+      "lng": 127.014667,
+      "lat": 37.493961,
+      "district_code": "11220",
+      "district_name": "서초구",
+      "daily_ridership": 90448,
+      "activity_type": "업무중심형",
+      "habitat_index": 0.5
+    },
+    {
+      "code": "S014",
+      "name": "합정",
+      "lines": [
+        "2호선",
+        "6호선"
+      ],
+      "lng": 126.913808,
+      "lat": 37.549457,
+      "district_code": "11140",
+      "district_name": "마포구",
+      "daily_ridership": 94953,
+      "activity_type": "도심혼합형",
+      "habitat_index": 0.67
+    },
+    {
+      "code": "S015",
+      "name": "당산",
+      "lines": [
+        "2호선",
+        "9호선"
+      ],
+      "lng": 126.902767,
+      "lat": 37.534946,
+      "district_code": "11190",
+      "district_name": "영등포구",
+      "daily_ridership": 76205,
+      "activity_type": "평일우위형",
+      "habitat_index": 0.84
+    },
+    {
+      "code": "S016",
+      "name": "영등포구청",
+      "lines": [
+        "2호선",
+        "5호선"
+      ],
+      "lng": 126.89661,
+      "lat": 37.525706,
+      "district_code": "11190",
+      "district_name": "영등포구",
+      "daily_ridership": 54422,
+      "activity_type": "업무중심형",
+      "habitat_index": 0.53
+    },
+    {
+      "code": "S017",
+      "name": "시청",
+      "lines": [
+        "1호선",
+        "2호선"
+      ],
+      "lng": 126.977088,
+      "lat": 37.565715,
+      "district_code": "11020",
+      "district_name": "중구",
+      "daily_ridership": 103367,
+      "activity_type": "업무중심형",
+      "habitat_index": 0.7
+    },
+    {
+      "code": "S018",
+      "name": "을지로입구",
+      "lines": [
+        "2호선"
+      ],
+      "lng": 126.982618,
+      "lat": 37.566014,
+      "district_code": "11020",
+      "district_name": "중구",
+      "daily_ridership": 99724,
+      "activity_type": "평일우위형",
+      "habitat_index": 0.39
+    },
+    {
+      "code": "S019",
+      "name": "을지로3가",
+      "lines": [
+        "2호선",
+        "3호선"
+      ],
+      "lng": 126.991696,
+      "lat": 37.566306,
+      "district_code": "11010",
+      "district_name": "종로구",
+      "daily_ridership": 73869,
+      "activity_type": "업무중심형",
+      "habitat_index": 0.56
+    },
+    {
+      "code": "S020",
+      "name": "동대문역사문화공원",
+      "lines": [
+        "2호선",
+        "4호선",
+        "5호선"
+      ],
+      "lng": 127.009054,
+      "lat": 37.565613,
+      "district_code": "11020",
+      "district_name": "중구",
+      "daily_ridership": 76647,
+      "activity_type": "도심혼합형",
+      "habitat_index": 0.73
+    },
+    {
+      "code": "S021",
+      "name": "왕십리",
+      "lines": [
+        "2호선",
+        "5호선",
+        "경원선"
+      ],
+      "lng": 127.036954,
+      "lat": 37.561238,
+      "district_code": "11040",
+      "district_name": "성동구",
+      "daily_ridership": 73770,
+      "activity_type": "평일우위형",
+      "habitat_index": 0.42
+    },
+    {
+      "code": "S022",
+      "name": "성수",
+      "lines": [
+        "2호선"
+      ],
+      "lng": 127.055961,
+      "lat": 37.544581,
+      "district_code": "11040",
+      "district_name": "성동구",
+      "daily_ridership": 104139,
+      "activity_type": "도심혼합형",
+      "habitat_index": 0.59
+    },
+    {
+      "code": "S023",
+      "name": "신촌",
+      "lines": [
+        "2호선",
+        "경의선"
+      ],
+      "lng": 126.936926,
+      "lat": 37.555131,
+      "district_code": "11130",
+      "district_name": "서대문구",
+      "daily_ridership": 77250,
+      "activity_type": "도심혼합형",
+      "habitat_index": 0.76
+    },
+    {
+      "code": "S024",
+      "name": "이대",
+      "lines": [
+        "2호선"
+      ],
+      "lng": 126.946013,
+      "lat": 37.556733,
+      "district_code": "11130",
+      "district_name": "서대문구",
+      "daily_ridership": 35285,
+      "activity_type": "평일우위형",
+      "habitat_index": 0.45
+    },
+    {
+      "code": "S025",
+      "name": "충정로",
+      "lines": [
+        "2호선",
+        "5호선"
+      ],
+      "lng": 126.964378,
+      "lat": 37.559704,
+      "district_code": "11130",
+      "district_name": "서대문구",
+      "daily_ridership": 29862,
+      "activity_type": "업무중심형",
+      "habitat_index": 0.62
+    },
+    {
+      "code": "S026",
+      "name": "가산디지털단지",
+      "lines": [
+        "7호선",
+        "경부선"
+      ],
+      "lng": 126.882656,
+      "lat": 37.480338,
+      "district_code": "11180",
+      "district_name": "금천구",
+      "daily_ridership": 115210,
+      "activity_type": "업무중심형",
+      "habitat_index": 0.79
+    },
+    {
+      "code": "S027",
+      "name": "여의도",
+      "lines": [
+        "5호선",
+        "9호선"
+      ],
+      "lng": 126.924357,
+      "lat": 37.521747,
+      "district_code": "11190",
+      "district_name": "영등포구",
+      "daily_ridership": 114969,
+      "activity_type": "업무중심형",
+      "habitat_index": 0.48
+    },
+    {
+      "code": "S028",
+      "name": "공덕",
+      "lines": [
+        "5호선",
+        "6호선",
+        "경의선",
+        "공항철도"
+      ],
+      "lng": 126.952099,
+      "lat": 37.542596,
+      "district_code": "11140",
+      "district_name": "마포구",
+      "daily_ridership": 80025,
+      "activity_type": "업무중심형",
+      "habitat_index": 0.65
+    },
+    {
+      "code": "S029",
+      "name": "노량진",
+      "lines": [
+        "9호선",
+        "경부선"
+      ],
+      "lng": 126.941005,
+      "lat": 37.513534,
+      "district_code": "11200",
+      "district_name": "동작구",
+      "daily_ridership": 71295,
+      "activity_type": "도심혼합형",
+      "habitat_index": 0.82
+    },
+    {
+      "code": "S030",
+      "name": "용산",
+      "lines": [
+        "경부선"
+      ],
+      "lng": 126.964561,
+      "lat": 37.529849,
+      "district_code": "11030",
+      "district_name": "용산구",
+      "daily_ridership": 90065,
+      "activity_type": "상권·여가형",
+      "habitat_index": 0.51
+    },
+    {
+      "code": "S031",
+      "name": "종로3가",
+      "lines": [
+        "1호선",
+        "3호선",
+        "5호선"
+      ],
+      "lng": 126.991791,
+      "lat": 37.571605,
+      "district_code": "11010",
+      "district_name": "종로구",
+      "daily_ridership": 105177,
+      "activity_type": "도심혼합형",
+      "habitat_index": 0.68
+    },
+    {
+      "code": "S032",
+      "name": "종각",
+      "lines": [
+        "1호선"
+      ],
+      "lng": 126.982923,
+      "lat": 37.570161,
+      "district_code": "11010",
+      "district_name": "종로구",
+      "daily_ridership": 76061,
+      "activity_type": "업무중심형",
+      "habitat_index": 0.85
+    },
+    {
+      "code": "S033",
+      "name": "광화문",
+      "lines": [
+        "5호선"
+      ],
+      "lng": 126.97717,
+      "lat": 37.571525,
+      "district_code": "11010",
+      "district_name": "종로구",
+      "daily_ridership": 68507,
+      "activity_type": "평일우위형",
+      "habitat_index": 0.54
+    },
+    {
+      "code": "S034",
+      "name": "청량리",
+      "lines": [
+        "1호선",
+        "경원선"
+      ],
+      "lng": 127.044585,
+      "lat": 37.579956,
+      "district_code": "11060",
+      "district_name": "동대문구",
+      "daily_ridership": 82280,
+      "activity_type": "도심혼합형",
+      "habitat_index": 0.71
+    },
+    {
+      "code": "S035",
+      "name": "동대문",
+      "lines": [
+        "1호선",
+        "4호선"
+      ],
+      "lng": 127.01093,
+      "lat": 37.571687,
+      "district_code": "11010",
+      "district_name": "종로구",
+      "daily_ridership": 62277,
+      "activity_type": "평일우위형",
+      "habitat_index": 0.4
+    },
+    {
+      "code": "S036",
+      "name": "혜화",
+      "lines": [
+        "4호선"
+      ],
+      "lng": 127.001844,
+      "lat": 37.582336,
+      "district_code": "11010",
+      "district_name": "종로구",
+      "daily_ridership": 74450,
+      "activity_type": "도심혼합형",
+      "habitat_index": 0.57
+    },
+    {
+      "code": "S037",
+      "name": "충무로",
+      "lines": [
+        "3호선",
+        "4호선"
+      ],
+      "lng": 126.99408,
+      "lat": 37.561207,
+      "district_code": "11020",
+      "district_name": "중구",
+      "daily_ridership": 62039,
+      "activity_type": "업무중심형",
+      "habitat_index": 0.74
+    },
+    {
+      "code": "S038",
+      "name": "삼각지",
+      "lines": [
+        "4호선",
+        "6호선"
+      ],
+      "lng": 126.9726,
+      "lat": 37.534075,
+      "district_code": "11030",
+      "district_name": "용산구",
+      "daily_ridership": 29829,
+      "activity_type": "도심혼합형",
+      "habitat_index": 0.43
+    },
+    {
+      "code": "S039",
+      "name": "연신내",
+      "lines": [
+        "3호선",
+        "6호선"
+      ],
+      "lng": 126.921038,
+      "lat": 37.619229,
+      "district_code": "11120",
+      "district_name": "은평구",
+      "daily_ridership": 70954,
+      "activity_type": "평일우위형",
+      "habitat_index": 0.6
+    },
+    {
+      "code": "S040",
+      "name": "불광",
+      "lines": [
+        "3호선",
+        "6호선"
+      ],
+      "lng": 126.92982,
+      "lat": 37.610553,
+      "district_code": "11120",
+      "district_name": "은평구",
+      "daily_ridership": 43659,
+      "activity_type": "평일우위형",
+      "habitat_index": 0.77
+    },
+    {
+      "code": "S041",
+      "name": "경복궁",
+      "lines": [
+        "3호선"
+      ],
+      "lng": 126.97353,
+      "lat": 37.575762,
+      "district_code": "11010",
+      "district_name": "종로구",
+      "daily_ridership": 54197,
+      "activity_type": "도심혼합형",
+      "habitat_index": 0.46
+    },
+    {
+      "code": "S042",
+      "name": "양재",
+      "lines": [
+        "3호선"
+      ],
+      "lng": 127.033902,
+      "lat": 37.484477,
+      "district_code": "11220",
+      "district_name": "서초구",
+      "daily_ridership": 74390,
+      "activity_type": "업무중심형",
+      "habitat_index": 0.63
+    },
+    {
+      "code": "S043",
+      "name": "강남구청",
+      "lines": [
+        "7호선",
+        "분당선"
+      ],
+      "lng": 127.041255,
+      "lat": 37.517179,
+      "district_code": "11230",
+      "district_name": "강남구",
+      "daily_ridership": 52491,
+      "activity_type": "업무중심형",
+      "habitat_index": 0.8
+    },
+    {
+      "code": "S044",
+      "name": "군자",
+      "lines": [
+        "5호선",
+        "7호선"
+      ],
+      "lng": 127.079577,
+      "lat": 37.557088,
+      "district_code": "11050",
+      "district_name": "광진구",
+      "daily_ridership": 51788,
+      "activity_type": "평일우위형",
+      "habitat_index": 0.49
+    },
+    {
+      "code": "S045",
+      "name": "천호",
+      "lines": [
+        "5호선",
+        "8호선"
+      ],
+      "lng": 127.123308,
+      "lat": 37.53864,
+      "district_code": "11250",
+      "district_name": "강동구",
+      "daily_ridership": 76946,
+      "activity_type": "평일우위형",
+      "habitat_index": 0.66
+    },
+    {
+      "code": "S046",
+      "name": "석촌",
+      "lines": [
+        "8호선",
+        "9호선2~3단계"
+      ],
+      "lng": 127.106832,
+      "lat": 37.505557,
+      "district_code": "11240",
+      "district_name": "송파구",
+      "daily_ridership": 37248,
+      "activity_type": "평일우위형",
+      "habitat_index": 0.83
+    },
+    {
+      "code": "S047",
+      "name": "가락시장",
+      "lines": [
+        "3호선",
+        "8호선"
+      ],
+      "lng": 127.117757,
+      "lat": 37.492245,
+      "district_code": "11240",
+      "district_name": "송파구",
+      "daily_ridership": 35323,
+      "activity_type": "평일우위형",
+      "habitat_index": 0.52
+    },
+    {
+      "code": "S048",
+      "name": "김포공항",
+      "lines": [
+        "5호선",
+        "9호선",
+        "경의선",
+        "공항철도",
+        "서해선"
+      ],
+      "lng": 126.801292,
+      "lat": 37.562384,
+      "district_code": "11160",
+      "district_name": "강서구",
+      "daily_ridership": 52794,
+      "activity_type": "도심혼합형",
+      "habitat_index": 0.69
+    },
+    {
+      "code": "S049",
+      "name": "신논현",
+      "lines": [
+        "9호선"
+      ],
+      "lng": 127.02506,
+      "lat": 37.504598,
+      "district_code": "11220",
+      "district_name": "서초구",
+      "daily_ridership": 63119,
+      "activity_type": "평일우위형",
+      "habitat_index": 0.38
+    },
+    {
+      "code": "S050",
+      "name": "종합운동장",
+      "lines": [
+        "2호선",
+        "9호선2~3단계"
+      ],
+      "lng": 127.073704,
+      "lat": 37.511022,
+      "district_code": "11240",
+      "district_name": "송파구",
+      "daily_ridership": 39560,
+      "activity_type": "상권·여가형",
+      "habitat_index": 0.55
+    },
+    {
+      "code": "S051",
+      "name": "대림",
+      "lines": [
+        "2호선",
+        "7호선"
+      ],
+      "lng": 126.897075,
+      "lat": 37.493013,
+      "district_code": "11190",
+      "district_name": "영등포구",
+      "daily_ridership": 67125,
+      "activity_type": "평일우위형",
+      "habitat_index": 0.72
+    },
+    {
+      "code": "S052",
+      "name": "이수",
+      "lines": [
+        "7호선"
+      ],
+      "lng": 126.981605,
+      "lat": 37.485196,
+      "district_code": "11200",
+      "district_name": "동작구",
+      "daily_ridership": 33021,
+      "activity_type": "평일우위형",
+      "habitat_index": 0.41
+    },
+    {
+      "code": "S053",
+      "name": "약수",
+      "lines": [
+        "3호선",
+        "6호선"
+      ],
+      "lng": 127.010358,
+      "lat": 37.554263,
+      "district_code": "11020",
+      "district_name": "중구",
+      "daily_ridership": 32342,
+      "activity_type": "평일우위형",
+      "habitat_index": 0.58
+    }
+  ],
+  "edges": [
+    {
+      "from_code": "S030",
+      "to_code": "S004",
+      "line": "1호선",
+      "base_daily_flow": 14410
+    },
+    {
+      "from_code": "S004",
+      "to_code": "S017",
+      "line": "1호선",
+      "base_daily_flow": 16539
+    },
+    {
+      "from_code": "S017",
+      "to_code": "S032",
+      "line": "1호선",
+      "base_daily_flow": 12170
+    },
+    {
+      "from_code": "S032",
+      "to_code": "S031",
+      "line": "1호선",
+      "base_daily_flow": 12170
+    },
+    {
+      "from_code": "S031",
+      "to_code": "S035",
+      "line": "1호선",
+      "base_daily_flow": 9964
+    },
+    {
+      "from_code": "S035",
+      "to_code": "S034",
+      "line": "1호선",
+      "base_daily_flow": 9964
+    },
+    {
+      "from_code": "S003",
+      "to_code": "S023",
+      "line": "2호선",
+      "base_daily_flow": 12360
+    },
+    {
+      "from_code": "S023",
+      "to_code": "S024",
+      "line": "2호선",
+      "base_daily_flow": 5646
+    },
+    {
+      "from_code": "S024",
+      "to_code": "S025",
+      "line": "2호선",
+      "base_daily_flow": 4778
+    },
+    {
+      "from_code": "S025",
+      "to_code": "S017",
+      "line": "2호선",
+      "base_daily_flow": 4778
+    },
+    {
+      "from_code": "S017",
+      "to_code": "S018",
+      "line": "2호선",
+      "base_daily_flow": 15956
+    },
+    {
+      "from_code": "S018",
+      "to_code": "S019",
+      "line": "2호선",
+      "base_daily_flow": 11819
+    },
+    {
+      "from_code": "S019",
+      "to_code": "S020",
+      "line": "2호선",
+      "base_daily_flow": 11819
+    },
+    {
+      "from_code": "S020",
+      "to_code": "S021",
+      "line": "2호선",
+      "base_daily_flow": 11803
+    },
+    {
+      "from_code": "S021",
+      "to_code": "S022",
+      "line": "2호선",
+      "base_daily_flow": 11803
+    },
+    {
+      "from_code": "S022",
+      "to_code": "S010",
+      "line": "2호선",
+      "base_daily_flow": 16662
+    },
+    {
+      "from_code": "S010",
+      "to_code": "S002",
+      "line": "2호선",
+      "base_daily_flow": 16766
+    },
+    {
+      "from_code": "S002",
+      "to_code": "S050",
+      "line": "2호선",
+      "base_daily_flow": 6330
+    },
+    {
+      "from_code": "S050",
+      "to_code": "S012",
+      "line": "2호선",
+      "base_daily_flow": 6330
+    },
+    {
+      "from_code": "S012",
+      "to_code": "S011",
+      "line": "2호선",
+      "base_daily_flow": 17182
+    },
+    {
+      "from_code": "S011",
+      "to_code": "S001",
+      "line": "2호선",
+      "base_daily_flow": 21220
+    },
+    {
+      "from_code": "S001",
+      "to_code": "S013",
+      "line": "2호선",
+      "base_daily_flow": 14472
+    },
+    {
+      "from_code": "S013",
+      "to_code": "S006",
+      "line": "2호선",
+      "base_daily_flow": 14472
+    },
+    {
+      "from_code": "S006",
+      "to_code": "S007",
+      "line": "2호선",
+      "base_daily_flow": 17369
+    },
+    {
+      "from_code": "S007",
+      "to_code": "S008",
+      "line": "2호선",
+      "base_daily_flow": 17369
+    },
+    {
+      "from_code": "S008",
+      "to_code": "S009",
+      "line": "2호선",
+      "base_daily_flow": 16967
+    },
+    {
+      "from_code": "S009",
+      "to_code": "S016",
+      "line": "2호선",
+      "base_daily_flow": 8708
+    },
+    {
+      "from_code": "S016",
+      "to_code": "S015",
+      "line": "2호선",
+      "base_daily_flow": 8708
+    },
+    {
+      "from_code": "S015",
+      "to_code": "S014",
+      "line": "2호선",
+      "base_daily_flow": 12193
+    },
+    {
+      "from_code": "S014",
+      "to_code": "S003",
+      "line": "2호선",
+      "base_daily_flow": 15192
+    },
+    {
+      "from_code": "S039",
+      "to_code": "S040",
+      "line": "3호선",
+      "base_daily_flow": 6985
+    },
+    {
+      "from_code": "S040",
+      "to_code": "S041",
+      "line": "3호선",
+      "base_daily_flow": 6985
+    },
+    {
+      "from_code": "S041",
+      "to_code": "S031",
+      "line": "3호선",
+      "base_daily_flow": 8672
+    },
+    {
+      "from_code": "S031",
+      "to_code": "S019",
+      "line": "3호선",
+      "base_daily_flow": 11819
+    },
+    {
+      "from_code": "S019",
+      "to_code": "S037",
+      "line": "3호선",
+      "base_daily_flow": 9926
+    },
+    {
+      "from_code": "S037",
+      "to_code": "S005",
+      "line": "3호선",
+      "base_daily_flow": 9926
+    },
+    {
+      "from_code": "S005",
+      "to_code": "S013",
+      "line": "3호선",
+      "base_daily_flow": 14472
+    },
+    {
+      "from_code": "S013",
+      "to_code": "S042",
+      "line": "3호선",
+      "base_daily_flow": 11902
+    },
+    {
+      "from_code": "S036",
+      "to_code": "S035",
+      "line": "4호선",
+      "base_daily_flow": 9964
+    },
+    {
+      "from_code": "S035",
+      "to_code": "S020",
+      "line": "4호선",
+      "base_daily_flow": 9964
+    },
+    {
+      "from_code": "S020",
+      "to_code": "S037",
+      "line": "4호선",
+      "base_daily_flow": 9926
+    },
+    {
+      "from_code": "S037",
+      "to_code": "S004",
+      "line": "4호선",
+      "base_daily_flow": 9926
+    },
+    {
+      "from_code": "S004",
+      "to_code": "S038",
+      "line": "4호선",
+      "base_daily_flow": 4773
+    },
+    {
+      "from_code": "S038",
+      "to_code": "S006",
+      "line": "4호선",
+      "base_daily_flow": 4773
+    },
+    {
+      "from_code": "S048",
+      "to_code": "S027",
+      "line": "5호선",
+      "base_daily_flow": 8447
+    },
+    {
+      "from_code": "S027",
+      "to_code": "S028",
+      "line": "5호선",
+      "base_daily_flow": 12804
+    },
+    {
+      "from_code": "S028",
+      "to_code": "S033",
+      "line": "5호선",
+      "base_daily_flow": 10961
+    },
+    {
+      "from_code": "S033",
+      "to_code": "S031",
+      "line": "5호선",
+      "base_daily_flow": 10961
+    },
+    {
+      "from_code": "S031",
+      "to_code": "S020",
+      "line": "5호선",
+      "base_daily_flow": 12264
+    },
+    {
+      "from_code": "S020",
+      "to_code": "S021",
+      "line": "5호선",
+      "base_daily_flow": 11803
+    },
+    {
+      "from_code": "S021",
+      "to_code": "S044",
+      "line": "5호선",
+      "base_daily_flow": 8286
+    },
+    {
+      "from_code": "S044",
+      "to_code": "S045",
+      "line": "5호선",
+      "base_daily_flow": 8286
+    },
+    {
+      "from_code": "S014",
+      "to_code": "S028",
+      "line": "6호선",
+      "base_daily_flow": 12804
+    },
+    {
+      "from_code": "S028",
+      "to_code": "S038",
+      "line": "6호선",
+      "base_daily_flow": 4773
+    },
+    {
+      "from_code": "S038",
+      "to_code": "S053",
+      "line": "6호선",
+      "base_daily_flow": 4773
+    },
+    {
+      "from_code": "S026",
+      "to_code": "S051",
+      "line": "7호선",
+      "base_daily_flow": 10740
+    },
+    {
+      "from_code": "S051",
+      "to_code": "S052",
+      "line": "7호선",
+      "base_daily_flow": 5283
+    },
+    {
+      "from_code": "S052",
+      "to_code": "S005",
+      "line": "7호선",
+      "base_daily_flow": 5283
+    },
+    {
+      "from_code": "S005",
+      "to_code": "S043",
+      "line": "7호선",
+      "base_daily_flow": 8399
+    },
+    {
+      "from_code": "S043",
+      "to_code": "S010",
+      "line": "7호선",
+      "base_daily_flow": 8399
+    },
+    {
+      "from_code": "S010",
+      "to_code": "S044",
+      "line": "7호선",
+      "base_daily_flow": 8286
+    },
+    {
+      "from_code": "S002",
+      "to_code": "S046",
+      "line": "8호선",
+      "base_daily_flow": 5960
+    },
+    {
+      "from_code": "S046",
+      "to_code": "S047",
+      "line": "8호선",
+      "base_daily_flow": 5652
+    },
+    {
+      "from_code": "S047",
+      "to_code": "S045",
+      "line": "8호선",
+      "base_daily_flow": 5652
+    },
+    {
+      "from_code": "S048",
+      "to_code": "S015",
+      "line": "9호선",
+      "base_daily_flow": 8447
+    },
+    {
+      "from_code": "S015",
+      "to_code": "S027",
+      "line": "9호선",
+      "base_daily_flow": 12193
+    },
+    {
+      "from_code": "S027",
+      "to_code": "S029",
+      "line": "9호선",
+      "base_daily_flow": 11407
+    },
+    {
+      "from_code": "S029",
+      "to_code": "S005",
+      "line": "9호선",
+      "base_daily_flow": 11407
+    },
+    {
+      "from_code": "S005",
+      "to_code": "S049",
+      "line": "9호선",
+      "base_daily_flow": 10099
+    },
+    {
+      "from_code": "S049",
+      "to_code": "S050",
+      "line": "9호선",
+      "base_daily_flow": 6330
+    },
+    {
+      "from_code": "S050",
+      "to_code": "S046",
+      "line": "9호선",
+      "base_daily_flow": 5960
+    }
+  ]
+}

@@ -5,7 +5,15 @@ import random
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-from app.simulation.schemas import DistrictState, PolicyType, TurnDelta
+from app.simulation.schemas import (
+    DistrictState,
+    PolicyType,
+    StationEdge,
+    StationMovementFlow,
+    StationState,
+    StationTurnDelta,
+    TurnDelta,
+)
 
 
 @dataclass(frozen=True)
@@ -180,3 +188,219 @@ class SampleMosquitoAdapter(SimulationAdapter):
         infection = min(infected_ratio * 18.0, 1.0)
         risk = (abundance * 52.0) + (habitat * 20.0) + (infection * 28.0)
         return min(100.0, risk * population_index)
+
+
+@dataclass(frozen=True)
+class StationSimulationContext:
+    turn: int
+    week: int
+    temperature_c: float
+    precipitation_mm: float
+
+
+class StationSimulationAdapter(ABC):
+    @abstractmethod
+    def step(
+        self,
+        stations: list[StationState],
+        edges: list[StationEdge],
+        interventions: dict[str, list[PolicyType]],
+        context: StationSimulationContext,
+    ) -> tuple[list[StationState], list[StationTurnDelta], list[StationMovementFlow]]:
+        """Advance station catchments and passenger flows by one week."""
+
+
+class SampleStationAdapter(StationSimulationAdapter):
+    """Station-catchment model built from published spatial ABM concepts.
+
+    Ridership values are observed public statistics. Living population,
+    passenger OD, infection arrivals, habitat pressure, and intervention
+    effects are explicit scenario estimates rather than measured station data.
+    """
+
+    def step(
+        self,
+        stations: list[StationState],
+        edges: list[StationEdge],
+        interventions: dict[str, list[PolicyType]],
+        context: StationSimulationContext,
+    ) -> tuple[list[StationState], list[StationTurnDelta], list[StationMovementFlow]]:
+        by_code = {station.code: station for station in stations}
+        flows = self._passenger_flows(by_code, edges, context.turn)
+        incoming = {station.code: 0 for station in stations}
+        for flow in flows:
+            incoming[flow.to_code] += flow.estimated_people
+
+        updated: list[StationState] = []
+        deltas: list[StationTurnDelta] = []
+        rng = random.Random(31001 + context.turn)
+        climate = self._climate(context.temperature_c, context.precipitation_mm)
+
+        for station in stations:
+            actions = interventions.get(station.code, [])
+            activity = self._activity_multiplier(station.activity_type, context.turn)
+            living_population = round(
+                station.daily_ridership * activity
+                + incoming[station.code] * 0.55
+                + 6800
+            )
+
+            breeding_sites = (
+                station.breeding_sites
+                + 2.8 * station.habitat_index * climate
+                + rng.uniform(-1.2, 1.6)
+            )
+            larvae = station.larvae
+            larvae += breeding_sites * (0.18 + climate * 0.05)
+            larvae *= 0.84
+
+            network_neighbors = self._neighbors(station.code, edges)
+            neighbor_adults = [
+                by_code[code].mosquito_adults for code in network_neighbors if code in by_code
+            ]
+            neighbor_pressure = (
+                (sum(neighbor_adults) / len(neighbor_adults) - station.mosquito_adults) * 0.012
+                if neighbor_adults
+                else 0
+            )
+            adults = station.mosquito_adults + larvae * (0.075 + climate * 0.018)
+            adults += neighbor_pressure
+            adults *= 0.86
+
+            infected_arrivals = (
+                living_population * 0.0011
+                + incoming[station.code] * 0.0018
+                + rng.uniform(1.0, 8.0)
+            )
+            breeding_sites, larvae, adults, infected_arrivals = self._apply_interventions(
+                breeding_sites,
+                larvae,
+                adults,
+                infected_arrivals,
+                actions,
+            )
+            exposure_risk = self._risk(
+                adults,
+                breeding_sites,
+                living_population,
+                infected_arrivals,
+                station.habitat_index,
+            )
+
+            next_station = station.model_copy(
+                update={
+                    "living_population": max(round(living_population), 1),
+                    "mosquito_adults": round(max(adults, 0), 2),
+                    "larvae": round(max(larvae, 0), 2),
+                    "breeding_sites": round(max(breeding_sites, 0), 2),
+                    "infected_arrivals": round(max(infected_arrivals, 0), 2),
+                    "exposure_risk": round(exposure_risk, 2),
+                    "last_actions": actions,
+                }
+            )
+            updated.append(next_station)
+            deltas.append(
+                StationTurnDelta(
+                    station_code=station.code,
+                    adults_delta=round(next_station.mosquito_adults - station.mosquito_adults, 2),
+                    breeding_delta=round(next_station.breeding_sites - station.breeding_sites, 2),
+                    arrivals_delta=round(next_station.infected_arrivals - station.infected_arrivals, 2),
+                    living_population_delta=next_station.living_population - station.living_population,
+                    risk_delta=round(next_station.exposure_risk - station.exposure_risk, 2),
+                )
+            )
+
+        return updated, deltas, flows
+
+    def _passenger_flows(
+        self,
+        stations: dict[str, StationState],
+        edges: list[StationEdge],
+        turn: int,
+    ) -> list[StationMovementFlow]:
+        flows: list[StationMovementFlow] = []
+        for index, edge in enumerate(edges):
+            first = stations[edge.from_code]
+            second = stations[edge.to_code]
+            reverse = (turn + index) % 3 == 0
+            source, target = (second, first) if reverse else (first, second)
+            pulse = 0.88 + ((turn * 13 + index * 7) % 31) / 100
+            transfer_boost = 1.22 if len(target.lines) > 1 else 1.0
+            flows.append(
+                StationMovementFlow(
+                    from_code=source.code,
+                    to_code=target.code,
+                    line=edge.line,
+                    estimated_people=max(
+                        round(edge.base_daily_flow * pulse * transfer_boost),
+                        500,
+                    ),
+                )
+            )
+        return sorted(flows, key=lambda flow: flow.estimated_people, reverse=True)[:36]
+
+    def _neighbors(self, code: str, edges: list[StationEdge]) -> list[str]:
+        neighbors = []
+        for edge in edges:
+            if edge.from_code == code:
+                neighbors.append(edge.to_code)
+            elif edge.to_code == code:
+                neighbors.append(edge.from_code)
+        return neighbors
+
+    def _activity_multiplier(self, activity_type: str, turn: int) -> float:
+        phases = {
+            "업무중심형": (1.18, 1.28, 1.08, 0.78),
+            "도심혼합형": (1.06, 1.18, 1.24, 0.92),
+            "평일우위형": (1.12, 1.2, 1.02, 0.8),
+        }
+        pattern = phases.get(activity_type, phases["도심혼합형"])
+        return pattern[turn % len(pattern)]
+
+    def _climate(self, temperature_c: float, precipitation_mm: float) -> float:
+        temperature = math.exp(-((temperature_c - 28.0) ** 2) / 72.0)
+        rain = min(precipitation_mm / 48.0, 1.7)
+        return max(0.35, temperature * (0.68 + rain * 0.32))
+
+    def _apply_interventions(
+        self,
+        breeding_sites: float,
+        larvae: float,
+        adults: float,
+        infected_arrivals: float,
+        actions: list[PolicyType],
+    ) -> tuple[float, float, float, float]:
+        if PolicyType.SOURCE_REDUCTION in actions:
+            breeding_sites *= 0.68
+            larvae *= 0.84
+        if PolicyType.LARVICIDE in actions:
+            larvae *= 0.52
+        if PolicyType.FOGGING in actions:
+            adults *= 0.68
+        if PolicyType.SURVEILLANCE in actions:
+            infected_arrivals *= 0.91
+        if PolicyType.OVITRAP in actions:
+            larvae *= 0.83
+            infected_arrivals *= 0.95
+        if PolicyType.HABITAT_MAPPING in actions:
+            breeding_sites *= 0.88
+        if PolicyType.PUBLIC_CAMPAIGN in actions:
+            infected_arrivals *= 0.9
+        if PolicyType.TARGETED_INSPECTION in actions:
+            larvae *= 0.74
+            adults *= 0.92
+        return breeding_sites, larvae, adults, infected_arrivals
+
+    def _risk(
+        self,
+        adults: float,
+        breeding_sites: float,
+        living_population: int,
+        infected_arrivals: float,
+        habitat_index: float,
+    ) -> float:
+        mosquito = min(adults / 620.0, 1.25) * 34
+        habitat = min(breeding_sites / 92.0, 1.1) * 16
+        crowd = min(living_population / 180000.0, 1.3) * 30
+        arrival = min(infected_arrivals / 280.0, 1.2) * 20
+        return min(100.0, (mosquito + habitat + crowd + arrival) * (0.82 + habitat_index * 0.22))
