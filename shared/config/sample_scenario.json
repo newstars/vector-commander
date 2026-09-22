@@ -1,0 +1,100 @@
+{
+  "scenario_name": "seoul_late_summer_sample",
+  "year": 2026,
+  "initial_budget": 300000000,
+  "weekly_budget_income": 35000000,
+  "initial_teams": 0,
+  "team_hire_cost": 55000000,
+  "max_teams": 8,
+  "week": 32,
+  "temperature_c": 28.0,
+  "precipitation_mm": 42.0,
+  "notes": [
+    "Sample parameters for gameplay and software validation only.",
+    "Do not treat these as verified parameters from Jeon-Young Kang's original ABM.",
+    "Resident population values are a rounded scenario snapshot; floating population is simulated and not live Seoul API data."
+  ],
+  "resident_population": {
+    "강동구": 459000,
+    "송파구": 654000,
+    "강남구": 562000,
+    "서초구": 408000,
+    "관악구": 482000,
+    "동작구": 378000,
+    "영등포구": 398000,
+    "금천구": 240000,
+    "구로구": 414000,
+    "강서구": 563000,
+    "양천구": 431000,
+    "마포구": 365000,
+    "서대문구": 320000,
+    "은평구": 463000,
+    "노원구": 495000,
+    "도봉구": 304000,
+    "강북구": 285000,
+    "성북구": 430000,
+    "중랑구": 384000,
+    "동대문구": 348000,
+    "광진구": 337000,
+    "성동구": 282000,
+    "용산구": 216000,
+    "중구": 135000,
+    "종로구": 150000
+  },
+  "policy_costs": {
+    "larvicide": {
+      "budget": 30000000,
+      "teams": 1
+    },
+    "fogging": {
+      "budget": 45000000,
+      "teams": 2
+    },
+    "source_reduction": {
+      "budget": 55000000,
+      "teams": 2
+    },
+    "surveillance": {
+      "budget": 18000000,
+      "teams": 1
+    },
+    "ovitrap": {
+      "budget": 24000000,
+      "teams": 1
+    },
+    "habitat_mapping": {
+      "budget": 15000000,
+      "teams": 1
+    },
+    "public_campaign": {
+      "budget": 22000000,
+      "teams": 1
+    },
+    "targeted_inspection": {
+      "budget": 27000000,
+      "teams": 1
+    }
+  },
+  "district_overrides": {
+    "강남구": {
+      "population_index": 1.25,
+      "water_index": 0.55,
+      "urban_heat_index": 1.18
+    },
+    "송파구": {
+      "population_index": 1.2,
+      "water_index": 0.68,
+      "urban_heat_index": 1.1
+    },
+    "강서구": {
+      "population_index": 1.0,
+      "water_index": 0.9,
+      "urban_heat_index": 1.0
+    },
+    "마포구": {
+      "population_index": 1.05,
+      "water_index": 0.82,
+      "urban_heat_index": 1.05
+    }
+  }
+}

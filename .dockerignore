@@ -1,0 +1,13 @@
+.git
+frontend/.next
+frontend/node_modules
+backend/.venv
+.pytest_cache
+**/.next
+**/.venv
+**/__pycache__
+**/.pytest_cache
+**/node_modules
+**/.DS_Store
+outputs
+work

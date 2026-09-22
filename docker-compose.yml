@@ -1,0 +1,15 @@
+name: vector-commander
+
+services:
+  vector-commander:
+    container_name: vector-commander
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_API_BASE: http://127.0.0.1:8000
+    image: vector-commander:local
+    ports:
+      - "3000:3000"
+      - "8000:8000"
+    environment:
+      NEXT_PUBLIC_API_BASE: http://127.0.0.1:8000
